@@ -1,5 +1,6 @@
-import '@/styles/global.css'
 import { Loading } from '@/components/loading'
+import ScreenContainer from '@/components/screen-container'
+import '@/styles/global.css'
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -14,7 +15,7 @@ import {
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins'
 import { Slot } from 'expo-router'
-import { StatusBar, View } from 'react-native'
+import { StatusBar } from 'react-native'
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -27,18 +28,19 @@ export default function Layout() {
     Inter_700Bold,
     Manrope_700Bold,
   })
+
   if (!fontsLoaded) {
     return <Loading />
   }
 
   return (
-    <View className=" flex-1 bg-gr-900">
+    <ScreenContainer>
       <StatusBar
         barStyle="light-content"
         backgroundColor="transparent"
         translucent
       />
       <Slot />
-    </View>
+    </ScreenContainer>
   )
 }

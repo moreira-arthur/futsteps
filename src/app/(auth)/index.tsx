@@ -1,3 +1,5 @@
+import { MyButton } from '@/components/button'
+import { Link, router } from 'expo-router'
 import { Image, ImageBackground, Text, View } from 'react-native'
 
 export default function Index() {
@@ -5,7 +7,12 @@ export default function Index() {
     <ImageBackground
       source={require('@/assets/bg.png')}
       resizeMode="cover"
-      style={{ flex: 1, justifyContent: 'center' }}
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        minHeight: '100%',
+        minWidth: '100%',
+      }}
     >
       <View className="flex-1 items-center justify-center">
         <Image
@@ -22,6 +29,16 @@ export default function Index() {
             plataforma única e inteligente, transformando dados em potencial
             esportivo!
           </Text>
+        </View>
+        <View className="mt-5 flex-row gap-5">
+          <MyButton
+            title="REGISTRAR"
+            onPress={() => router.navigate('/(auth)/register')}
+          />
+          <MyButton
+            title="ENTRAR"
+            onPress={() => router.navigate('/(auth)/login')}
+          />
         </View>
       </View>
     </ImageBackground>
