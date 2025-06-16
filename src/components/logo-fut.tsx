@@ -4,7 +4,7 @@ export function LogoFut() {
   return (
     <Image
       source={require('@/assets/logo.png')}
-      className=" w-48 h-14 max-w-48 max-h-14"
+      className="w-40 h-12 max-w-[320px] max-h-[80px]"
       resizeMode="contain"
     />
   )
