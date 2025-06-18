@@ -113,7 +113,7 @@ export default function ClubLastResults() {
               borderRadius: 16,
               padding: 12,
               gap: 8,
-              minWidth: 380,
+              minWidth: isSmall ? 300 : 450,
               maxWidth: 800,
               justifyContent: 'center',
               alignSelf: 'center',
