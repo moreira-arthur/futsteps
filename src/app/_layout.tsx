@@ -1,5 +1,5 @@
-import { Loading } from '@/components/loading'
-import ScreenContainer from '@/components/screen-container'
+import { Loading } from '../components/common/loading'
+import ScreenContainer from '../components/common/screen-container'
 import '@/styles/global.css'
 import {
   Inter_400Regular,
@@ -16,6 +16,7 @@ import {
 } from '@expo-google-fonts/poppins'
 import { Slot } from 'expo-router'
 import { StatusBar } from 'react-native'
+import { ToastProvider } from '../components/common/toast-provider'
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -34,13 +35,15 @@ export default function Layout() {
   }
 
   return (
-    <ScreenContainer>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="transparent"
-        translucent
-      />
-      <Slot />
-    </ScreenContainer>
+    <ToastProvider>
+      <ScreenContainer>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent
+        />
+        <Slot />
+      </ScreenContainer>
+    </ToastProvider>
   )
 }

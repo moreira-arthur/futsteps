@@ -1,4 +1,4 @@
-import { Player } from '@/types/mocks'
+import type { Player } from '@/mocks/mock-training'
 import React, { useState } from 'react'
 import { Dimensions, Modal, Pressable, Text, View } from 'react-native'
 import Svg, { Rect, Circle, Line, Text as SvgText } from 'react-native-svg'
@@ -9,6 +9,7 @@ type FieldProps = {
   formationTitular: string
   formationReserve: string
   onPlayerPress?: (player: Player) => void
+  onPlayerSeeMore?: (player: Player) => void
 }
 
 const FIELD_MARGIN = 16
@@ -20,53 +21,55 @@ const FIELD_WIDTH = Math.max(
   Math.min(windowWidth - FIELD_MARGIN * 2, MAX_FIELD_WIDTH)
 )
 const FIELD_HEIGHT = FIELD_WIDTH * 0.6 // paisagem
-const PLAYER_RADIUS = 22
+const PLAYER_RADIUS = windowWidth >= 900 ? 30 : 16
 
-// Posições fixas para 4-3-3 e 3-4-3, cada time em um lado do campo
-const positionMaps = {
-  '4-3-3': [
-    { x: 0.08, y: 0.5 }, // GK
-    { x: 0.2, y: 0.15 }, // LB
-    { x: 0.2, y: 0.35 }, // CB
-    { x: 0.2, y: 0.65 }, // CB2
-    { x: 0.2, y: 0.85 }, // RB
-    { x: 0.35, y: 0.25 }, // CM
-    { x: 0.35, y: 0.5 }, // CDM
-    { x: 0.35, y: 0.75 }, // CM2
-    { x: 0.55, y: 0.2 }, // LW
-    { x: 0.55, y: 0.5 }, // ST
-    { x: 0.55, y: 0.8 }, // RW
-  ],
-  '3-4-3': [
-    { x: 0.92, y: 0.5 }, // GK
-    { x: 0.8, y: 0.2 }, // CB
-    { x: 0.8, y: 0.4 }, // CB2
-    { x: 0.8, y: 0.6 }, // CB3
-    { x: 0.8, y: 0.8 }, // LM
-    { x: 0.65, y: 0.25 }, // CM
-    { x: 0.65, y: 0.5 }, // CM2
-    { x: 0.65, y: 0.75 }, // RM
-    { x: 0.45, y: 0.2 }, // LW
-    { x: 0.45, y: 0.5 }, // ST
-    { x: 0.45, y: 0.8 }, // RW
-  ],
+// Novo type para o dicionário de posições
+interface PositionMap {
+  [key: string]: { x: number; y: number }
+}
+
+const positionMaps: { [formation: string]: PositionMap } = {
+  '4-3-3': {
+    GK: { x: 0.08, y: 0.5 },
+    LB: { x: 0.2, y: 0.15 },
+    CB: { x: 0.2, y: 0.35 },
+    CB2: { x: 0.2, y: 0.65 },
+    RB: { x: 0.2, y: 0.85 },
+    CDM: { x: 0.35, y: 0.5 },
+    CM: { x: 0.35, y: 0.25 },
+    CM2: { x: 0.35, y: 0.75 },
+    LW: { x: 0.55, y: 0.2 },
+    ST: { x: 0.55, y: 0.5 },
+    RW: { x: 0.55, y: 0.8 },
+  },
+  '3-4-3': {
+    GK: { x: 0.92, y: 0.5 },
+    CB: { x: 0.8, y: 0.25 },
+    CB2: { x: 0.8, y: 0.5 },
+    CB3: { x: 0.8, y: 0.75 },
+    LM: { x: 0.65, y: 0.2 },
+    CM: { x: 0.65, y: 0.4 },
+    CM2: { x: 0.65, y: 0.6 },
+    RM: { x: 0.65, y: 0.8 },
+    LW: { x: 0.45, y: 0.2 },
+    ST: { x: 0.45, y: 0.5 },
+    RW: { x: 0.45, y: 0.8 },
+  },
 }
 
 function getPlayerCoords(
   player: Player,
-  index: number,
   teamType: 'titular' | 'reserva',
   formationTitular: string,
   formationReserve: string
 ) {
-  // O index é garantido pelo array de jogadores já ordenado por posição
   const formation = teamType === 'titular' ? formationTitular : formationReserve
   const map = positionMaps[formation as keyof typeof positionMaps]
-  if (!map || !map[index])
+  if (!map || !map[player.position])
     return { x: 0.5 * FIELD_WIDTH, y: 0.5 * FIELD_HEIGHT }
   return {
-    x: map[index].x * FIELD_WIDTH,
-    y: map[index].y * FIELD_HEIGHT,
+    x: map[player.position].x * FIELD_WIDTH,
+    y: map[player.position].y * FIELD_HEIGHT,
   }
 }
 
@@ -75,6 +78,7 @@ export function Field({
   formationTitular,
   formationReserve,
   onPlayerPress,
+  onPlayerSeeMore,
 }: FieldProps) {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
   // Separar titulares e reservas e garantir ordem
@@ -114,6 +118,8 @@ export function Field({
           fill="none"
           stroke="#fff"
           strokeWidth={2}
+          rx={10}
+          ry={10}
         />
         {/* Linha do meio */}
         <Line
@@ -188,7 +194,6 @@ export function Field({
         {titulares.map((player, i) => {
           const { x, y } = getPlayerCoords(
             player,
-            i,
             'titular',
             formationTitular,
             formationReserve
@@ -199,7 +204,7 @@ export function Field({
                 cx={x}
                 cy={y}
                 r={PLAYER_RADIUS}
-                fill="#ef4444"
+                fill={player.teamType === 'titular' ? '#ef4444' : '#FFCC26'}
                 stroke="#000"
                 strokeWidth={1}
               />
@@ -208,7 +213,7 @@ export function Field({
                 y={y + 7}
                 fontSize={18}
                 fontWeight="bold"
-                fill="#fff"
+                fill={player.teamType === 'titular' ? '#fff' : '#000'}
                 textAnchor="middle"
               >
                 {player.number}
@@ -220,7 +225,6 @@ export function Field({
         {reservas.map((player, i) => {
           const { x, y } = getPlayerCoords(
             player,
-            i,
             'reserva',
             formationTitular,
             formationReserve
@@ -231,7 +235,7 @@ export function Field({
                 cx={x}
                 cy={y}
                 r={PLAYER_RADIUS}
-                fill="#ffe066"
+                fill={player.teamType === 'titular' ? '#ef4444' : '#FFCC26'}
                 stroke="#000"
                 strokeWidth={1}
               />
@@ -240,7 +244,7 @@ export function Field({
                 y={y + 7}
                 fontSize={18}
                 fontWeight="bold"
-                fill="#333"
+                fill={player.teamType === 'titular' ? '#fff' : '#000'}
                 textAnchor="middle"
               >
                 {player.number}
@@ -257,13 +261,12 @@ export function Field({
           top: 0,
           width: FIELD_WIDTH,
           height: FIELD_HEIGHT,
+          pointerEvents: 'box-none',
         }}
-        pointerEvents="box-none"
       >
         {titulares.map((player, i) => {
           const { x, y } = getPlayerCoords(
             player,
-            i,
             'titular',
             formationTitular,
             formationReserve
@@ -291,7 +294,6 @@ export function Field({
         {reservas.map((player, i) => {
           const { x, y } = getPlayerCoords(
             player,
-            i,
             'reserva',
             formationTitular,
             formationReserve
@@ -323,7 +325,14 @@ export function Field({
         visible={!!selectedPlayer}
         onClose={() => setSelectedPlayer(null)}
         onSeeMore={player => {
-          console.log('Ver mais', player)
+          if (
+            player.name === 'Frankie de Jong' ||
+            player.name === 'Gerard Piqué' ||
+            player.name === 'Memphis Depay'
+          ) {
+            onPlayerSeeMore?.(player)
+            setSelectedPlayer(null)
+          }
         }}
         fieldWidth={FIELD_WIDTH}
       />

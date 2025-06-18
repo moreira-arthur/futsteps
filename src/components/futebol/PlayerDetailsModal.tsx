@@ -1,4 +1,4 @@
-import { Player } from '@/types/mocks'
+import type { Player } from '@/mocks/mock-training'
 import React from 'react'
 import { Modal, Pressable, Text, View } from 'react-native'
 import Svg, { Circle, Text as SvgText } from 'react-native-svg'
@@ -39,7 +39,7 @@ export function PlayerDetailsModal({
       >
         <View
           style={{
-            backgroundColor: '#222',
+            backgroundColor: '#18181b',
             padding: 24,
             borderRadius: 12,
             minWidth: 200,
@@ -55,7 +55,7 @@ export function PlayerDetailsModal({
               cx={30}
               cy={30}
               r={28}
-              fill={player.teamType === 'titular' ? '#ef4444' : '#ffe066'}
+              fill={player.teamType === 'titular' ? '#ef4444' : '#FFCC26'}
               stroke="#000"
               strokeWidth={2}
             />
@@ -64,7 +64,7 @@ export function PlayerDetailsModal({
               y={38}
               fontSize={24}
               fontWeight="bold"
-              fill="#fff"
+              fill={player.teamType === 'titular' ? '#fff' : '#000'}
               textAnchor="middle"
             >
               {player.number}
@@ -95,7 +95,7 @@ export function PlayerDetailsModal({
             </Text>
             <Pressable
               style={{
-                backgroundColor: '#3b82f6',
+                backgroundColor: '#FFCC26',
                 borderRadius: 8,
                 paddingHorizontal: 24,
                 paddingVertical: 10,
@@ -103,7 +103,9 @@ export function PlayerDetailsModal({
               }}
               onPress={() => onSeeMore(player)}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>
+              <Text
+                style={{ color: '#18181b', fontWeight: 'bold', fontSize: 16 }}
+              >
                 Ver mais
               </Text>
             </Pressable>

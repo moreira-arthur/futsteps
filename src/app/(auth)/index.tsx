@@ -1,9 +1,9 @@
-import { ClubesParceiros } from '@/components/clubes-parceiros'
-import { Footer } from '@/components/footer'
-import { FutstepsBackground } from '@/components/futsteps-background'
-import { Hero } from '@/components/hero'
-import { PorqueEscolher } from '@/components/porque-escolher'
 import { ScrollView, View, useWindowDimensions } from 'react-native'
+import { ClubesParceiros } from '../../components/home/clubes-parceiros'
+import { Hero } from '../../components/home/hero'
+import { PorqueEscolher } from '../../components/home/porque-escolher'
+import { Footer } from '../../components/layout/footer'
+import { FutstepsBackground } from '../../components/layout/futsteps-background'
 
 const CLUBS = [
   { name: 'Barcelona', image: require('@/assets/clubs/barcelona.png') },

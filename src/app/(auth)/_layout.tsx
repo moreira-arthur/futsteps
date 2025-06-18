@@ -15,8 +15,14 @@ export default function AuthLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="register" options={{ title: 'Voltar' }} />
-      <Stack.Screen name="login" options={{ title: 'Voltar' }} />
+      <Stack.Screen
+        name="register"
+        options={{ title: 'Voltar', headerShown: false }}
+      />
+      <Stack.Screen
+        name="login"
+        options={{ title: 'Voltar', headerShown: false }}
+      />
 
       {/* As demais telas herdarão headerShown: true por padrão */}
     </Stack>

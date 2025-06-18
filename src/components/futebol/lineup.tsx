@@ -1,4 +1,4 @@
-import { Player } from '@/types/mocks'
+import type { Player } from '@/mocks/mock-training'
 import React from 'react'
 import { ScrollView, Text, View } from 'react-native'
 
@@ -12,70 +12,41 @@ export function Lineup({ players, formation, teamType }: LineupProps) {
   const filteredPlayers = players.filter(player => player.teamType === teamType)
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#23232b',
-        borderRadius: 12,
-        padding: 12,
-        marginBottom: 8,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 12,
-        }}
-      >
-        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>
+    <View className="flex-1 bg-zinc-800 rounded-lg p-3">
+      <View className="flex-row justify-between items-center mb-3">
+        <Text className="text-zinc-100 text-base font-manropeBold">
           {teamType === 'titular' ? 'Titulares' : 'Reservas'}
         </Text>
-        <Text style={{ color: '#ccc', fontSize: 14 }}>{formation}</Text>
+        <Text className="text-zinc-400 text-sm">{formation}</Text>
       </View>
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView className="flex-1">
         {filteredPlayers.map(player => (
           <View
             key={player.id}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingVertical: 8,
-              borderBottomWidth: 1,
-              borderBottomColor: '#333',
-            }}
+            className="flex-row items-center justify-between py-2 border-b border-zinc-700"
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View className="flex-row items-center">
               <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
-                  backgroundColor:
-                    teamType === 'titular' ? '#ef4444' : '#3b82f6',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginRight: 12,
-                }}
+                className={`w-8 h-8 rounded-full items-center justify-center mr-3 ${
+                  teamType === 'titular' ? 'bg-red-500' : 'bg-yl-400'
+                }`}
               >
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                <Text
+                  className={`font-manropeBold ${
+                    teamType === 'titular' ? 'text-zinc-100' : 'text-zinc-900'
+                  }`}
+                >
                   {player.number}
                 </Text>
               </View>
               <View>
-                <Text style={{ color: '#fff', fontWeight: '500' }}>
+                <Text className="text-zinc-100 font-manropeMedium">
                   {player.name}
                 </Text>
-                <Text style={{ color: '#ccc', fontSize: 12 }}>
-                  {player.position}
-                </Text>
+                <Text className="text-zinc-400 text-sm">{player.position}</Text>
               </View>
             </View>
-            <Text style={{ color: '#ccc', fontSize: 12 }}>
-              {player.age} anos
-            </Text>
+            <Text className="text-zinc-400 text-sm">{player.age} anos</Text>
           </View>
         ))}
       </ScrollView>

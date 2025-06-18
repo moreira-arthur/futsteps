@@ -34,8 +34,8 @@ export default function Results({ results }: ResultsProps) {
         LATEST RESULTS
       </Text>
       <View style={{ gap: 8 }}>
-        {results.map((r, i) => (
-          <Text key={i} style={{ color: '#fff' }}>
+        {results.map(r => (
+          <Text key={`${r.home}-${r.away}-${r.date}`} style={{ color: '#fff' }}>
             {r.home} vs {r.away} - {r.date}
           </Text>
         ))}

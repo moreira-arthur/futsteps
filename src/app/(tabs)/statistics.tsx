@@ -1,17 +1,7 @@
-import AthleteGeneralDataCard from '@/components/athlete-general-data-card'
-import AthleteInfoCard from '@/components/athlete-info-card'
-import AthleteInjuriesCard from '@/components/athlete-injuries-card'
-import AthleteLastTrainingStatsCard from '@/components/athlete-last-training-stats-card'
-import AthletePerformanceCard from '@/components/athlete-performance-card'
-import ClubBestPlayers from '@/components/club-best-players'
-import ClubGeneralDataCard from '@/components/club-general-data-card'
-import ClubInfoCard from '@/components/club-info-card'
-import ClubLastResults from '@/components/club-last-results'
-import ClubPerformanceAreaChart from '@/components/club-performance-area-chart'
-import ClubSeasonStats from '@/components/club-season-stats'
-import ScreenContainer from '@/components/screen-container'
+import { mockAthletes } from '@/mocks/mock-athletes'
 import { Feather } from '@expo/vector-icons'
-import React, { useState } from 'react'
+import { useLocalSearchParams } from 'expo-router'
+import React, { useState, useEffect } from 'react'
 import {
   FlatList,
   Image,
@@ -21,42 +11,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import AthleteGeneralDataCard from '../../components/athlete/athlete-general-data-card'
+import AthleteInfoCard from '../../components/athlete/athlete-info-card'
+import AthleteInjuriesCard from '../../components/athlete/athlete-injuries-card'
+import AthleteLastTrainingStatsCard from '../../components/athlete/athlete-last-training-stats-card'
+import AthletePerformanceCard from '../../components/athlete/athlete-performance-card'
+import ClubBestPlayers from '../../components/club/club-best-players'
+import ClubGeneralDataCard from '../../components/club/club-general-data-card'
+import ClubInfoCard from '../../components/club/club-info-card'
+import ClubLastResults from '../../components/club/club-last-results'
+import ClubPerformanceAreaChart from '../../components/club/club-performance-area-chart'
+import ClubSeasonStats from '../../components/club/club-season-stats'
+import ScreenContainer from '../../components/common/screen-container'
 
 const TABS = [
   { key: 'athlete', label: 'Atleta' },
   { key: 'club', label: 'Clube' },
   // { key: 'training', label: 'Treino' },
-]
-
-// Mock de atletas
-const ATHLETES = [
-  {
-    id: '1',
-    name: 'Frankie de Jong',
-    position: 'Meia',
-    age: 27,
-    number: 45,
-    team: { name: 'Barcelona', logo: require('@/assets/clubs/barcelona.png') },
-    photo: require('@/assets/players/frakie-de-jong.png'),
-  },
-  {
-    id: '2',
-    name: 'Gerard Piqué',
-    position: 'Zagueiro',
-    age: 35,
-    number: 3,
-    team: { name: 'Barcelona', logo: require('@/assets/clubs/barcelona.png') },
-    photo: require('@/assets/players/gerad-pique.png'),
-  },
-  {
-    id: '3',
-    name: 'Memphis Depay',
-    position: 'Atacante',
-    age: 28,
-    number: 9,
-    team: { name: 'Barcelona', logo: require('@/assets/clubs/barcelona.png') },
-    photo: require('@/assets/players/memphis-dapay.png'),
-  },
 ]
 
 // Mock para seleção de atributos do radar/área
@@ -69,16 +40,27 @@ const CLUB_ATTRIBUTES = [
 ]
 
 export default function Statistics() {
+  const params = useLocalSearchParams()
+  const playerName = typeof params.player === 'string' ? params.player : ''
   const [activeTab, setActiveTab] = useState('athlete')
   const [search, setSearch] = useState('')
-  const [selectedAthlete, setSelectedAthlete] = useState(ATHLETES[0])
+  const [selectedAthlete, setSelectedAthlete] = useState(mockAthletes[0])
   const [selectedClubAttrs, setSelectedClubAttrs] = useState<string[]>([
     'velocidade',
     'chutes',
   ])
 
+  useEffect(() => {
+    if (playerName) {
+      const found = mockAthletes.find(
+        a => a.name.toLowerCase() === playerName.toLowerCase()
+      )
+      if (found) setSelectedAthlete(found)
+    }
+  }, [playerName])
+
   // Filtra atletas pelo nome
-  const filteredAthletes = ATHLETES.filter(a =>
+  const filteredAthletes = mockAthletes.filter(a =>
     a.name.toLowerCase().includes(search.toLowerCase())
   )
 
@@ -105,11 +87,11 @@ export default function Statistics() {
       <View className="flex-1">
         {activeTab === 'athlete' && (
           <ScrollView
-            className="flex-1 w-full"
+            className="flex-1 mx-4"
             contentContainerStyle={{ alignItems: 'center', paddingBottom: 32 }}
           >
             {/* Campo de busca */}
-            <View className="w-full max-w-xl mb-4 flex-row items-center bg-zinc-800 rounded-lg px-2 h-10">
+            <View className="w-full max-w-[1200px] mb-4 flex-row items-center bg-zinc-800 rounded-lg px-2 h-10 ">
               <Feather
                 name="search"
                 size={22}
@@ -136,11 +118,7 @@ export default function Statistics() {
                   backgroundColor: '#18181b',
                   borderRadius: 12,
                   marginTop: 4,
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.15,
-                  shadowRadius: 8,
-                  elevation: 4,
+                  boxShadow: '0px 2px 8px rgba(0,0,0,0.15)',
                   maxHeight: 220,
                   overflow: 'hidden',
                   alignSelf: 'center',
@@ -181,7 +159,7 @@ export default function Statistics() {
         )}
         {activeTab === 'club' && (
           <ScrollView
-            className="flex-1 w-full"
+            className="flex-1 mx-4 "
             contentContainerStyle={{ alignItems: 'center', paddingBottom: 32 }}
           >
             <ClubInfoCard />

@@ -19,7 +19,8 @@
         "image": "./assets/images/splash.png",
         "resizeMode": "cover",
         "backgroundColor": "#111111"
-      }
+      },
+      "bundleIdentifier": "com.moreiraarthur.futsteps"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,7 +32,8 @@
         "resizeMode": "cover",
         "backgroundColor": "#111111"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.moreiraarthur.futsteps"
     },
     "web": {
       "bundler": "metro",
@@ -44,6 +46,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c25025f4-6d72-41f3-8f91-18dd7bccf825"
+      }
+    },
+    "owner": "moreira-arthur"
   }
 }
