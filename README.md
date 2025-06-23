@@ -16,7 +16,7 @@ Clone o repositório e instale as dependências:
 
 ```sh
 git clone https://github.com/moreira-arthur/futsteps
-cd futsteps/mobile
+cd futsteps
 npm install
 # ou
 yarn
