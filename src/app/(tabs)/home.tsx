@@ -38,7 +38,14 @@ export default function HomeScreen() {
 
   return (
     <ScreenContainer>
-      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{
+          padding: 16,
+        }}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
         <Text className="flex mt-5 items-center justify-center text-yl-400 text-3xl font-manropeBold">
           ÚLTIMO TREINO
         </Text>
@@ -72,10 +79,7 @@ export default function HomeScreen() {
           </View>
         </View>
         {/* Campo centralizado */}
-        <View
-          className="flex-1 items-center justify-center mt-10 mb-8"
-          // style={{ width: FIELD_WIDTH }}
-        >
+        <View className="items-center justify-center mt-10 mb-8">
           <Field
             players={mockTraining.players}
             formationTitular={mockTraining.formationTitular}
@@ -84,43 +88,61 @@ export default function HomeScreen() {
           />
         </View>
         {/* Grid responsivo para os cards */}
-        <View
-          className={`flex w-full ${isSmall ? 'flex-col' : 'flex-row flex-wrap'} gap-4 mb-4  justify-center`}
-        >
-          <View
-            className={`${isSmall ? 'w-full' : 'w-[48%]'} bg-zinc-800 rounded-lg p-3`}
-          >
-            <Lineup
-              players={mockTraining.players}
-              formation={mockTraining.formationTitular}
-              teamType="titular"
-            />
+        {isSmall ? (
+          // MOBILE: Layout em coluna
+          <View className="flex-col gap-4 mb-4">
+            <View className="w-full bg-zinc-800 rounded-lg p-3">
+              <Lineup
+                players={mockTraining.players}
+                formation={mockTraining.formationTitular}
+                teamType="titular"
+              />
+            </View>
+            <View className="w-full bg-zinc-800 rounded-lg p-3">
+              <Lineup
+                players={mockTraining.players}
+                formation={mockTraining.formationReserve}
+                teamType="reserva"
+              />
+            </View>
+            <View className="w-full bg-zinc-800 rounded-lg p-3">
+              <PlayerTable players={mockTraining.players} />
+            </View>
+            <View className="w-full bg-zinc-800 rounded-lg p-3">
+              <Stats stats={mockStats} />
+            </View>
+            <View className="w-full bg-zinc-800 rounded-lg p-3">
+              <InjuredPlayers players={mockInjuries} />
+            </View>
           </View>
-          <View
-            className={`${isSmall ? 'w-full' : 'w-[48%]'} bg-zinc-800 rounded-lg p-3`}
-          >
-            <Lineup
-              players={mockTraining.players}
-              formation={mockTraining.formationReserve}
-              teamType="reserva"
-            />
+        ) : (
+          // DESKTOP: Layout em grid
+          <View className="flex-row flex-wrap gap-4 mb-4 justify-center">
+            <View className="w-[48%] bg-zinc-800 rounded-lg p-3">
+              <Lineup
+                players={mockTraining.players}
+                formation={mockTraining.formationTitular}
+                teamType="titular"
+              />
+            </View>
+            <View className="w-[48%] bg-zinc-800 rounded-lg p-3">
+              <Lineup
+                players={mockTraining.players}
+                formation={mockTraining.formationReserve}
+                teamType="reserva"
+              />
+            </View>
+            <View className="w-[48%] bg-zinc-800 rounded-lg p-3">
+              <PlayerTable players={mockTraining.players} />
+            </View>
+            <View className="w-[48%] bg-zinc-800 rounded-lg p-3">
+              <Stats stats={mockStats} />
+            </View>
+            <View className="w-[97%] bg-zinc-800 rounded-lg p-3">
+              <InjuredPlayers players={mockInjuries} />
+            </View>
           </View>
-          <View
-            className={`${isSmall ? 'w-full' : 'w-[48%]'} bg-zinc-800 rounded-lg p-3`}
-          >
-            <PlayerTable players={mockTraining.players} />
-          </View>
-          <View
-            className={`${isSmall ? 'w-full' : 'w-[48%]'} bg-zinc-800 rounded-lg p-3`}
-          >
-            <Stats stats={mockStats} />
-          </View>
-          <View
-            className={`${isSmall ? 'w-full' : 'w-[97%]'} bg-zinc-800 rounded-lg p-3`}
-          >
-            <InjuredPlayers players={mockInjuries} />
-          </View>
-        </View>
+        )}
       </ScrollView>
     </ScreenContainer>
   )

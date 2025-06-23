@@ -1,5 +1,5 @@
 import FormInput from '@/components/common/form-input'
-import { fireEvent, render } from '@testing-library/react-native'
+import { act, fireEvent, render } from '@testing-library/react-native' // Importação do 'act'
 import React from 'react'
 
 describe('FormInput Combinations', () => {
@@ -11,7 +11,8 @@ describe('FormInput Combinations', () => {
   })
 
   describe('Required + Validation', () => {
-    it('handles required field with validation', () => {
+    it('handles required field with validation', async () => {
+      // Função de teste assíncrona
       const { getByPlaceholderText } = render(
         <FormInput
           placeholder="Required input"
@@ -28,18 +29,25 @@ describe('FormInput Combinations', () => {
       )
       const input = getByPlaceholderText('Required input')
 
-      // Test empty required field
-      fireEvent.changeText(input, '')
+      // Teste campo requerido vazio
+      await act(async () => {
+        // Envolvendo fireEvent em act
+        fireEvent.changeText(input, '')
+      })
       expect(mockOnValidationChange).toHaveBeenCalledWith(false)
 
-      // Test valid input
-      fireEvent.changeText(input, 'abc')
+      // Teste input válido
+      await act(async () => {
+        // Envolvendo fireEvent em act
+        fireEvent.changeText(input, 'abc')
+      })
       expect(mockOnValidationChange).toHaveBeenCalledWith(true)
     })
   })
 
   describe('Error + Password', () => {
-    it('handles error state with password visibility', () => {
+    it('handles error state with password visibility', async () => {
+      // Função de teste assíncrona
       const { getByPlaceholderText, getByTestId } = render(
         <FormInput
           type="password"
@@ -51,20 +59,24 @@ describe('FormInput Combinations', () => {
       const input = getByPlaceholderText('Password input')
       const toggleButton = getByTestId('password-toggle')
 
-      // Initially password should be hidden
+      // Inicialmente, a senha deve estar oculta
       expect(input.props.secureTextEntry).toBe(true)
 
-      // Toggle password visibility
-      fireEvent.press(toggleButton)
+      // Alternar visibilidade da senha
+      await act(async () => {
+        // Envolvendo fireEvent em act
+        fireEvent.press(toggleButton)
+      })
       expect(input.props.secureTextEntry).toBe(false)
 
-      // Error should still be visible
+      // O erro ainda deve estar visível
       expect(input.props.accessibilityHint).toContain('Invalid password')
     })
   })
 
   describe('Disabled + Validation', () => {
-    it('handles disabled state with validation', () => {
+    it('handles disabled state with validation', async () => {
+      // Função de teste assíncrona
       const { getByPlaceholderText } = render(
         <FormInput
           placeholder="Disabled input"
@@ -81,18 +93,22 @@ describe('FormInput Combinations', () => {
       )
       const input = getByPlaceholderText('Disabled input')
 
-      // Input should be disabled
+      // Input deve estar desabilitado
       expect(input.props.editable).toBe(false)
       expect(input.props.accessibilityState.disabled).toBe(true)
 
-      // Try to change text (should not work)
-      fireEvent.changeText(input, 'abc')
+      // Tentar mudar o texto (não deve funcionar)
+      await act(async () => {
+        // Envolvendo fireEvent em act
+        fireEvent.changeText(input, 'abc')
+      })
       expect(mockOnChangeText).not.toHaveBeenCalled()
     })
   })
 
   describe('Type + Required + Error', () => {
-    it('handles type-specific validation with required and error states', () => {
+    it('handles type-specific validation with required and error states', async () => {
+      // Função de teste assíncrona
       const { getByPlaceholderText } = render(
         <FormInput
           placeholder="Email input"
@@ -106,18 +122,25 @@ describe('FormInput Combinations', () => {
       )
       const input = getByPlaceholderText('Email input')
 
-      // Check accessibility states
+      // Verificar estados de acessibilidade
       expect(input.props.accessibilityHint).toContain('Invalid email')
       expect(input.props.accessibilityLabel).toBe(
         'Email input (required) (email)'
       )
 
-      // Test valid email
-      fireEvent.changeText(input, 'test@example.com')
+      // Testar e-mail válido
+      await act(async () => {
+        // Envolvendo fireEvent em act
+        fireEvent.changeText(input, 'test@example.com')
+      })
+      // A expectativa pode precisar ser ajustada dependendo de como o componente FormInput lida com a validação interna e a propriedade 'error'
+      // Se o erro for removido ao digitar um valor válido, a expectativa abaixo será verdadeira.
+      // Caso contrário, você pode precisar simular a limpeza do erro.
       expect(input.props.accessibilityHint).toBe('Enter your email address')
     })
 
-    it('handles password input with all states', () => {
+    it('handles password input with all states', async () => {
+      // Função de teste assíncrona
       const { getByPlaceholderText, getByTestId } = render(
         <FormInput
           placeholder="Password input"
@@ -133,7 +156,7 @@ describe('FormInput Combinations', () => {
       const input = getByPlaceholderText('Password input')
       const toggleButton = getByTestId('password-toggle')
 
-      // Check accessibility states
+      // Verificar estados de acessibilidade
       expect(input.props.accessibilityHint).toContain('Invalid password')
       expect(input.props.accessibilityHint).toContain('disabled')
       expect(input.props.accessibilityHint).toContain('password input')
@@ -141,13 +164,14 @@ describe('FormInput Combinations', () => {
         'Password input (required) (password)'
       )
 
-      // Toggle button should be disabled
+      // Botão de alternância deve estar desabilitado
       expect(toggleButton.props.accessibilityState.disabled).toBe(true)
     })
   })
 
   describe('Decimal + Required + Error', () => {
-    it('handles decimal input with required and error states', () => {
+    it('handles decimal input with required and error states', async () => {
+      // Função de teste assíncrona
       const { getByPlaceholderText } = render(
         <FormInput
           type="decimal"
@@ -166,24 +190,34 @@ describe('FormInput Combinations', () => {
       )
       const input = getByPlaceholderText('Decimal input')
 
-      // Test invalid decimal
-      fireEvent.changeText(input, 'abc')
+      // Testar decimal inválido
+      await act(async () => {
+        // Envolvendo fireEvent em act
+        fireEvent.changeText(input, 'abc')
+      })
       expect(mockOnValidationChange).toHaveBeenCalledWith(false)
 
-      // Test valid decimal with comma
-      fireEvent.changeText(input, '123,45')
+      // Testar decimal válido com vírgula
+      await act(async () => {
+        // Envolvendo fireEvent em act
+        fireEvent.changeText(input, '123,45')
+      })
       expect(mockOnChangeText).toHaveBeenCalledWith('123.45')
       expect(mockOnValidationChange).toHaveBeenCalledWith(true)
 
-      // Test multiple decimal points (should be normalized to one)
-      fireEvent.changeText(input, '123.45.67')
+      // Testar múltiplos pontos decimais (deve ser normalizado para um)
+      await act(async () => {
+        // Envolvendo fireEvent em act
+        fireEvent.changeText(input, '123.45.67')
+      })
       expect(mockOnChangeText).toHaveBeenCalledWith('123.4567')
       expect(mockOnValidationChange).toHaveBeenCalledWith(true)
     })
   })
 
   describe('Password + Required + Error + Disabled', () => {
-    it('handles password input with all states', () => {
+    it('handles password input with all states', async () => {
+      // Função de teste assíncrona
       const { getByPlaceholderText, getByTestId } = render(
         <FormInput
           placeholder="Password input"
@@ -198,13 +232,13 @@ describe('FormInput Combinations', () => {
       const input = getByPlaceholderText('Password input')
       const toggleButton = getByTestId('password-toggle')
 
-      // Check accessibility states
+      // Verificar estados de acessibilidade
       expect(input.props.accessibilityHint).toContain('Invalid password')
       expect(input.props.accessibilityHint).toContain('disabled')
       expect(input.props.accessibilityLabel).toContain('(required)')
       expect(input.props.accessibilityLabel).toContain('(password)')
 
-      // Toggle button should be disabled
+      // Botão de alternância deve estar desabilitado
       expect(toggleButton.props.accessibilityState.disabled).toBe(true)
     })
   })

@@ -1,5 +1,5 @@
 import FormInput from '@/components/common/form-input'
-import { fireEvent, render } from '@testing-library/react-native'
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native'
 import React from 'react'
 
 describe('FormInput Validation', () => {
@@ -11,7 +11,7 @@ describe('FormInput Validation', () => {
   })
 
   describe('Number Input Validation', () => {
-    it('accepts valid numeric input', () => {
+    it('accepts valid numeric input', async () => {
       const { getByPlaceholderText } = render(
         <FormInput
           type="number"
@@ -22,12 +22,17 @@ describe('FormInput Validation', () => {
       )
       const input = getByPlaceholderText('Number input')
 
-      fireEvent.changeText(input, '123')
-      expect(mockOnChangeText).toHaveBeenCalledWith('123')
-      expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      await act(async () => {
+        fireEvent.changeText(input, '123')
+      })
+
+      await waitFor(() => {
+        expect(mockOnChangeText).toHaveBeenCalledWith('123')
+        expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      })
     })
 
-    it('rejects non-numeric input', () => {
+    it('rejects non-numeric input', async () => {
       const { getByPlaceholderText } = render(
         <FormInput
           type="number"
@@ -38,14 +43,19 @@ describe('FormInput Validation', () => {
       )
       const input = getByPlaceholderText('Number input')
 
-      fireEvent.changeText(input, 'abc')
-      expect(mockOnChangeText).toHaveBeenCalledWith('')
-      expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      await act(async () => {
+        fireEvent.changeText(input, 'abc')
+      })
+
+      await waitFor(() => {
+        expect(mockOnChangeText).toHaveBeenCalledWith('')
+        expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      })
     })
   })
 
   describe('Decimal Input Validation', () => {
-    it('accepts valid decimal input', () => {
+    it('accepts valid decimal input', async () => {
       const { getByPlaceholderText } = render(
         <FormInput
           type="decimal"
@@ -56,12 +66,17 @@ describe('FormInput Validation', () => {
       )
       const input = getByPlaceholderText('Decimal input')
 
-      fireEvent.changeText(input, '123.45')
-      expect(mockOnChangeText).toHaveBeenCalledWith('123.45')
-      expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      await act(async () => {
+        fireEvent.changeText(input, '123.45')
+      })
+
+      await waitFor(() => {
+        expect(mockOnChangeText).toHaveBeenCalledWith('123.45')
+        expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      })
     })
 
-    it('converts comma to decimal point', () => {
+    it('converts comma to decimal point', async () => {
       const { getByPlaceholderText } = render(
         <FormInput
           type="decimal"
@@ -72,12 +87,17 @@ describe('FormInput Validation', () => {
       )
       const input = getByPlaceholderText('Decimal input')
 
-      fireEvent.changeText(input, '123,45')
-      expect(mockOnChangeText).toHaveBeenCalledWith('123.45')
-      expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      await act(async () => {
+        fireEvent.changeText(input, '123,45')
+      })
+
+      await waitFor(() => {
+        expect(mockOnChangeText).toHaveBeenCalledWith('123.45')
+        expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      })
     })
 
-    it('normalizes multiple decimal points to single point', () => {
+    it('normalizes multiple decimal points to single point', async () => {
       const { getByPlaceholderText } = render(
         <FormInput
           type="decimal"
@@ -88,12 +108,17 @@ describe('FormInput Validation', () => {
       )
       const input = getByPlaceholderText('Decimal input')
 
-      fireEvent.changeText(input, '123.45.67')
-      expect(mockOnChangeText).toHaveBeenCalledWith('123.4567')
-      expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      await act(async () => {
+        fireEvent.changeText(input, '123.45.67')
+      })
+
+      await waitFor(() => {
+        expect(mockOnChangeText).toHaveBeenCalledWith('123.4567')
+        expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      })
     })
 
-    it('rejects non-numeric input', () => {
+    it('rejects non-numeric input', async () => {
       const { getByPlaceholderText } = render(
         <FormInput
           type="decimal"
@@ -104,14 +129,19 @@ describe('FormInput Validation', () => {
       )
       const input = getByPlaceholderText('Decimal input')
 
-      fireEvent.changeText(input, 'abc')
-      expect(mockOnChangeText).toHaveBeenCalledWith('')
-      expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      await act(async () => {
+        fireEvent.changeText(input, 'abc')
+      })
+
+      await waitFor(() => {
+        expect(mockOnChangeText).toHaveBeenCalledWith('')
+        expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      })
     })
   })
 
   describe('Email Input Validation', () => {
-    it('accepts valid email input', () => {
+    it('accepts valid email input', async () => {
       const { getByPlaceholderText } = render(
         <FormInput
           type="email"
@@ -122,12 +152,17 @@ describe('FormInput Validation', () => {
       )
       const input = getByPlaceholderText('Email input')
 
-      fireEvent.changeText(input, 'test@example.com')
-      expect(mockOnChangeText).toHaveBeenCalledWith('test@example.com')
-      expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      await act(async () => {
+        fireEvent.changeText(input, 'test@example.com')
+      })
+
+      await waitFor(() => {
+        expect(mockOnChangeText).toHaveBeenCalledWith('test@example.com')
+        expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      })
     })
 
-    it('rejects invalid email input', () => {
+    it('rejects invalid email input', async () => {
       const { getByPlaceholderText } = render(
         <FormInput
           type="email"
@@ -145,14 +180,19 @@ describe('FormInput Validation', () => {
       )
       const input = getByPlaceholderText('Email input')
 
-      fireEvent.changeText(input, 'invalid-email')
-      expect(mockOnChangeText).toHaveBeenCalledWith('invalid-email')
-      expect(mockOnValidationChange).toHaveBeenCalledWith(false)
+      await act(async () => {
+        fireEvent.changeText(input, 'invalid-email')
+      })
+
+      await waitFor(() => {
+        expect(mockOnChangeText).toHaveBeenCalledWith('invalid-email')
+        expect(mockOnValidationChange).toHaveBeenCalledWith(false)
+      })
     })
   })
 
   describe('Password Input Validation', () => {
-    it('validates password length', () => {
+    it('validates password length', async () => {
       const { getByPlaceholderText } = render(
         <FormInput
           type="password"
@@ -169,13 +209,21 @@ describe('FormInput Validation', () => {
       )
       const input = getByPlaceholderText('Password input')
 
-      fireEvent.changeText(input, 'short')
-      expect(mockOnChangeText).toHaveBeenCalledWith('short')
-      expect(mockOnValidationChange).toHaveBeenCalledWith(false)
+      await act(async () => {
+        fireEvent.changeText(input, 'short')
+      })
+      await waitFor(() => {
+        expect(mockOnChangeText).toHaveBeenCalledWith('short')
+        expect(mockOnValidationChange).toHaveBeenCalledWith(false)
+      })
 
-      fireEvent.changeText(input, 'longer-password')
-      expect(mockOnChangeText).toHaveBeenCalledWith('longer-password')
-      expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      await act(async () => {
+        fireEvent.changeText(input, 'longer-password')
+      })
+      await waitFor(() => {
+        expect(mockOnChangeText).toHaveBeenCalledWith('longer-password')
+        expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+      })
     })
   })
 })

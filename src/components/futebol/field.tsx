@@ -1,6 +1,6 @@
 import type { Player } from '@/mocks/mock-training'
 import React, { useState } from 'react'
-import { Dimensions, Modal, Pressable, Text, View } from 'react-native'
+import { Modal, Pressable, Text, View, useWindowDimensions } from 'react-native'
 import Svg, { Rect, Circle, Line, Text as SvgText } from 'react-native-svg'
 import { PlayerDetailsModal } from './PlayerDetailsModal'
 
@@ -11,17 +11,6 @@ type FieldProps = {
   onPlayerPress?: (player: Player) => void
   onPlayerSeeMore?: (player: Player) => void
 }
-
-const FIELD_MARGIN = 16
-const MAX_FIELD_WIDTH = 1000
-const MIN_FIELD_WIDTH = 320
-const windowWidth = Dimensions.get('window').width
-const FIELD_WIDTH = Math.max(
-  MIN_FIELD_WIDTH,
-  Math.min(windowWidth - FIELD_MARGIN * 2, MAX_FIELD_WIDTH)
-)
-const FIELD_HEIGHT = FIELD_WIDTH * 0.6 // paisagem
-const PLAYER_RADIUS = windowWidth >= 900 ? 30 : 16
 
 // Novo type para o dicionário de posições
 interface PositionMap {
@@ -61,7 +50,9 @@ function getPlayerCoords(
   player: Player,
   teamType: 'titular' | 'reserva',
   formationTitular: string,
-  formationReserve: string
+  formationReserve: string,
+  FIELD_WIDTH: number,
+  FIELD_HEIGHT: number
 ) {
   const formation = teamType === 'titular' ? formationTitular : formationReserve
   const map = positionMaps[formation as keyof typeof positionMaps]
@@ -81,6 +72,17 @@ export function Field({
   onPlayerSeeMore,
 }: FieldProps) {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  const { width: windowWidth } = useWindowDimensions()
+  const FIELD_MARGIN = 16
+  const MAX_FIELD_WIDTH = 1000
+  const MIN_FIELD_WIDTH = 320
+  const FIELD_WIDTH = Math.max(
+    MIN_FIELD_WIDTH,
+    Math.min(windowWidth - FIELD_MARGIN * 2, MAX_FIELD_WIDTH)
+  )
+  const FIELD_HEIGHT = FIELD_WIDTH * 0.6 // paisagem
+  const PLAYER_RADIUS = windowWidth >= 900 ? 30 : 16
+
   // Separar titulares e reservas e garantir ordem
   const titulares = players.filter(p => p.teamType === 'titular')
   const reservas = players.filter(p => p.teamType === 'reserva')
@@ -100,9 +102,6 @@ export function Field({
         width={FIELD_WIDTH}
         height={FIELD_HEIGHT}
         style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
           backgroundColor: '#176a1a',
           borderRadius: 12,
           borderWidth: 2,
@@ -196,7 +195,9 @@ export function Field({
             player,
             'titular',
             formationTitular,
-            formationReserve
+            formationReserve,
+            FIELD_WIDTH,
+            FIELD_HEIGHT
           )
           return (
             <React.Fragment key={player.id}>
@@ -227,7 +228,9 @@ export function Field({
             player,
             'reserva',
             formationTitular,
-            formationReserve
+            formationReserve,
+            FIELD_WIDTH,
+            FIELD_HEIGHT
           )
           return (
             <React.Fragment key={player.id}>
@@ -269,7 +272,9 @@ export function Field({
             player,
             'titular',
             formationTitular,
-            formationReserve
+            formationReserve,
+            FIELD_WIDTH,
+            FIELD_HEIGHT
           )
           return (
             <Pressable
@@ -296,7 +301,9 @@ export function Field({
             player,
             'reserva',
             formationTitular,
-            formationReserve
+            formationReserve,
+            FIELD_WIDTH,
+            FIELD_HEIGHT
           )
           return (
             <Pressable
