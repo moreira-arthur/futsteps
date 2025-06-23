@@ -76,11 +76,12 @@ export function Field({
   const FIELD_MARGIN = 16
   const MAX_FIELD_WIDTH = 1000
   const MIN_FIELD_WIDTH = 320
+  const FIELD_PADDING = 2
   const FIELD_WIDTH = Math.max(
     MIN_FIELD_WIDTH,
     Math.min(windowWidth - FIELD_MARGIN * 2, MAX_FIELD_WIDTH)
   )
-  const FIELD_HEIGHT = FIELD_WIDTH * 0.6 // paisagem
+  const FIELD_HEIGHT = FIELD_WIDTH * 0.6
   const PLAYER_RADIUS = windowWidth >= 900 ? 30 : 16
 
   // Separar titulares e reservas e garantir ordem
@@ -98,22 +99,23 @@ export function Field({
       }}
     >
       {/* Campo SVG */}
-      <Svg
-        width={FIELD_WIDTH}
-        height={FIELD_HEIGHT}
-        style={{
-          backgroundColor: '#176a1a',
-          borderRadius: 12,
-          borderWidth: 2,
-          borderColor: '#fff',
-        }}
-      >
+      <Svg width={FIELD_WIDTH} height={FIELD_HEIGHT}>
+        {/* Fundo verde */}
+        <Rect
+          x={FIELD_PADDING}
+          y={FIELD_PADDING}
+          width={FIELD_WIDTH - FIELD_PADDING * 2}
+          height={FIELD_HEIGHT - FIELD_PADDING * 2}
+          fill="#176a1a"
+          rx={12}
+          ry={12}
+        />
         {/* Linhas externas */}
         <Rect
-          x={0}
-          y={0}
-          width={FIELD_WIDTH}
-          height={FIELD_HEIGHT}
+          x={FIELD_PADDING}
+          y={FIELD_PADDING}
+          width={FIELD_WIDTH - FIELD_PADDING * 2}
+          height={FIELD_HEIGHT - FIELD_PADDING * 2}
           fill="none"
           stroke="#fff"
           strokeWidth={2}
@@ -123,9 +125,9 @@ export function Field({
         {/* Linha do meio */}
         <Line
           x1={FIELD_WIDTH / 2}
-          y1={0}
+          y1={FIELD_PADDING}
           x2={FIELD_WIDTH / 2}
-          y2={FIELD_HEIGHT}
+          y2={FIELD_HEIGHT - FIELD_PADDING}
           stroke="#fff"
           strokeWidth={2}
         />
@@ -140,7 +142,7 @@ export function Field({
         />
         {/* Áreas grandes */}
         <Rect
-          x={0}
+          x={FIELD_PADDING}
           y={FIELD_HEIGHT * 0.18}
           width={FIELD_WIDTH * 0.14}
           height={FIELD_HEIGHT * 0.64}
@@ -149,7 +151,7 @@ export function Field({
           strokeWidth={2}
         />
         <Rect
-          x={FIELD_WIDTH * 0.86}
+          x={FIELD_WIDTH - FIELD_PADDING - FIELD_WIDTH * 0.14}
           y={FIELD_HEIGHT * 0.18}
           width={FIELD_WIDTH * 0.14}
           height={FIELD_HEIGHT * 0.64}
@@ -159,7 +161,7 @@ export function Field({
         />
         {/* Pequenas áreas */}
         <Rect
-          x={0}
+          x={FIELD_PADDING}
           y={FIELD_HEIGHT * 0.32}
           width={FIELD_WIDTH * 0.06}
           height={FIELD_HEIGHT * 0.36}
@@ -168,7 +170,7 @@ export function Field({
           strokeWidth={2}
         />
         <Rect
-          x={FIELD_WIDTH * 0.94}
+          x={FIELD_WIDTH - FIELD_PADDING - FIELD_WIDTH * 0.06}
           y={FIELD_HEIGHT * 0.32}
           width={FIELD_WIDTH * 0.06}
           height={FIELD_HEIGHT * 0.36}

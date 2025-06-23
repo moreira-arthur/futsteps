@@ -1,7 +1,15 @@
 import { getUsers } from '@/lib/storage'
 import { Feather } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import { Pressable, Text, View, useWindowDimensions } from 'react-native'
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native'
 import AuthForm from '../../components/auth/form'
 import ScreenContainer from '../../components/common/screen-container'
 import { useToast } from '../../components/common/toast-provider'
@@ -41,13 +49,23 @@ export default function Login() {
           </Text>
         </Pressable>
       </View>
-      <View
-        className="flex-1 items-center justify-center gap-10"
-        style={{ zIndex: 1 }}
+      <KeyboardAvoidingView
+        style={{ flex: 1, zIndex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={80}
       >
-        <LogoFut />
-        <AuthForm mode="login" onSubmit={handleLogin} />
-      </View>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <LogoFut />
+          <AuthForm mode="login" onSubmit={handleLogin} />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   )
 }
