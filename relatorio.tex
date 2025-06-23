@@ -1,0 +1,382 @@
+\section{Desenvolvimento do Aplicativo}
+
+\subsection{Tecnologias Utilizadas}
+
+\subsubsection{Front-end}
+O aplicativo FutSteps foi desenvolvido utilizando um stack moderno de tecnologias front-end, priorizando performance, manutenibilidade e experiência do usuário:
+
+\begin{itemize}
+    \item \textbf{React Native (v0.79.3)}: Framework principal para desenvolvimento mobile multiplataforma, permitindo o desenvolvimento de aplicativos nativos para iOS e Android com uma única base de código JavaScript/TypeScript.
+    
+    \item \textbf{Expo (v53.0.11)}: Plataforma de desenvolvimento que simplifica o processo de criação de aplicativos React Native, oferecendo ferramentas de desenvolvimento, build e deploy otimizadas.
+    
+    \item \textbf{TypeScript (v5.8.3)}: Linguagem de programação que adiciona tipagem estática ao JavaScript, proporcionando maior segurança de tipos, melhor IntelliSense e detecção de erros em tempo de desenvolvimento.
+    
+    \item \textbf{Expo Router (v5.1.0)}: Sistema de roteamento baseado em arquivos (file-based routing) que simplifica a navegação entre telas, oferecendo uma experiência similar ao Next.js para React Native.
+    
+    \item \textbf{NativeWind (v4.1.23)}: Biblioteca que permite o uso do Tailwind CSS no React Native, oferecendo uma abordagem utilitária para estilização com classes CSS.
+    
+    \item \textbf{Tailwind CSS (v3.4.17)}: Framework CSS utilitário que permite estilização rápida e consistente através de classes predefinidas, facilitando a criação de interfaces responsivas.
+    
+    \item \textbf{React Navigation (v7.1.9)}: Biblioteca oficial para navegação entre telas do React Native, oferecendo navegação por abas, stack e drawer.
+    
+    \item \textbf{Expo Vector Icons (v14.1.0)}: Biblioteca de ícones vetoriais que inclui múltiplas famílias de ícones (FontAwesome, Ionicons, etc.) otimizadas para React Native.
+    
+    \item \textbf{React Native Reanimated (v3.17.4)}: Biblioteca para animações fluidas e performáticas, utilizando a thread nativa para cálculos de animação.
+    
+    \item \textbf{React Native SVG (v15.11.2)}: Biblioteca para renderização de gráficos SVG no React Native, utilizada para criar o campo de futebol interativo.
+\end{itemize}
+
+\subsubsection{Back-end}
+\textbf{Nota}: O back-end não foi desenvolvido para este projeto. Em vez disso, foram implementadas as seguintes práticas para simular funcionalidades de persistência e dados:
+
+\begin{itemize}
+    \item \textbf{AsyncStorage (v2.1.2)}: Sistema de armazenamento local assíncrono para persistência de dados de usuário no dispositivo, utilizado principalmente para autenticação e preferências do usuário.
+    
+    \item \textbf{Dados Mockados}: Estruturas de dados estáticas que simulam respostas de API, incluindo dados de atletas, clubes, estatísticas, treinos e lesões, permitindo o desenvolvimento e teste da interface sem dependência de um servidor.
+\end{itemize}
+
+\subsubsection{Ferramentas de Desenvolvimento e Qualidade}
+\begin{itemize}
+    \item \textbf{Jest (v29.2.1)}: Framework de testes unitários que oferece suporte completo para testes de componentes React Native, incluindo mocks e assertions avançadas.
+    
+    \item \textbf{Testing Library (v13.2.0)}: Biblioteca para testes de componentes React que prioriza testes baseados no comportamento do usuário, facilitando a criação de testes mais robustos e manuteníveis.
+    
+    \item \textbf{Biome (v1.9.4)}: Linter e formatter de código moderno que substitui o ESLint e Prettier, oferecendo formatação automática e detecção de problemas de código.
+    
+    \item \textbf{EAS Build}: Sistema de build da Expo para produção, permitindo a criação de builds nativos para iOS e Android através da nuvem, sem necessidade de configuração local de SDKs.
+\end{itemize}
+
+\subsection{Estrutura do Código Desenvolvido}
+
+\subsubsection{Arquitetura do Projeto}
+O projeto segue uma arquitetura modular e escalável, organizada em camadas bem definidas:
+
+\begin{verbatim}
+src/
+├── app/                    # Camada de roteamento e telas principais
+│   ├── (auth)/            # Grupo de rotas para autenticação
+│   │   ├── _layout.tsx    # Layout específico para autenticação
+│   │   ├── index.tsx      # Tela inicial de auth (redirecionamento)
+│   │   ├── login.tsx      # Tela de login
+│   │   └── register.tsx   # Tela de registro
+│   ├── (tabs)/            # Grupo de rotas principais com navegação por abas
+│   │   ├── _layout.tsx    # Layout com TabBar customizada
+│   │   ├── home.tsx       # Tela principal com campo de futebol
+│   │   ├── management.tsx # Tela de gerenciamento
+│   │   └── statistics.tsx # Tela de estatísticas
+│   ├── (management)/      # Grupo de rotas para funcionalidades específicas
+│   │   ├── performance.tsx    # Dados de performance
+│   │   ├── physical-data.tsx  # Dados físicos
+│   │   └── training.tsx       # Dados de treino
+│   └── _layout.tsx        # Layout raiz com providers globais
+├── components/            # Camada de componentes reutilizáveis
+│   ├── athlete/          # Componentes específicos de atletas
+│   ├── auth/             # Componentes de autenticação
+│   ├── club/             # Componentes de clubes
+│   ├── common/           # Componentes comuns (Button, Input, etc.)
+│   ├── futebol/          # Componentes relacionados ao futebol
+│   ├── home/             # Componentes da tela inicial
+│   ├── layout/           # Componentes de layout (TabBar, etc.)
+│   └── physical-data/    # Componentes de dados físicos
+├── lib/                  # Camada de utilitários e configurações
+│   ├── storage.ts        # Funções de AsyncStorage
+│   └── utils/            # Utilitários gerais
+├── mocks/                # Camada de dados simulados
+├── styles/               # Camada de estilos globais
+├── tests/                # Camada de testes automatizados
+└── types/                # Camada de definições de tipos TypeScript
+\end{verbatim}
+
+\subsubsection{Padrões de Desenvolvimento Implementados}
+
+O código segue rigorosos padrões de desenvolvimento modernos:
+
+\begin{itemize}
+    \item \textbf{Componentização Modular}: Cada componente tem uma responsabilidade específica e é reutilizável em diferentes contextos. Por exemplo, o componente \texttt{Field} é responsável apenas pela renderização do campo de futebol, enquanto \texttt{PlayerTable} gerencia a exibição da tabela de jogadores.
+    
+    \item \textbf{TypeScript Rigoroso}: Tipagem forte em toda a aplicação, incluindo interfaces para props de componentes, tipos para dados mockados e definições de funções, garantindo maior segurança e manutenibilidade.
+    
+    \item \textbf{Tailwind CSS Utilitário}: Estilização baseada em classes utilitárias que facilita a manutenção e garante consistência visual. O projeto inclui customizações específicas de cores e fontes.
+    
+    \item \textbf{Separação de Responsabilidades}: Cada arquivo tem uma função específica - componentes apenas renderizam, hooks gerenciam estado, utilitários processam dados, e mocks fornecem dados de teste.
+    
+    \item \textbf{Testes Automatizados}: Cobertura de testes para componentes críticos, incluindo testes de acessibilidade, validação, performance e segurança.
+\end{itemize}
+
+\subsubsection{Configuração do Projeto}
+
+O projeto utiliza configurações avançadas para otimizar o desenvolvimento:
+
+\begin{verbatim}
+// app.json - Configuração principal do Expo
+{
+  "expo": {
+    "name": "futsteps",
+    "slug": "futsteps",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,  // Nova arquitetura do React Native
+    "experiments": {
+      "typedRoutes": true    // Rotas tipadas
+    }
+  }
+}
+\end{verbatim}
+
+\subsection{Integração com Banco de Dados}
+
+\subsubsection{AsyncStorage para Autenticação}
+
+O sistema de autenticação foi implementado utilizando AsyncStorage para persistência local, simulando um sistema de banco de dados local:
+
+\begin{verbatim}
+// src/lib/storage.ts - Sistema de armazenamento local
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+export interface User {
+  name: string
+  email: string
+  password: string
+}
+
+const USERS_KEY = 'users'
+
+// Função para recuperar todos os usuários
+export async function getUsers(): Promise<User[]> {
+  const data = await AsyncStorage.getItem(USERS_KEY)
+  if (!data) return []
+  try {
+    return JSON.parse(data)
+  } catch {
+    return []
+  }
+}
+
+// Função para salvar um novo usuário
+export async function saveUser(user: User): Promise<void> {
+  const users = await getUsers()
+  users.push(user)
+  await AsyncStorage.setItem(USERS_KEY, JSON.stringify(users))
+}
+
+// Função para autenticar usuário
+export async function findUserByEmailAndPassword(
+  email: string,
+  password: string
+): Promise<User | undefined> {
+  const users = await getUsers()
+  return users.find(u => u.email === email && u.password === password)
+}
+\end{verbatim}
+
+\subsubsection{Implementação do Sistema de Login}
+
+O processo de autenticação é implementado de forma segura e responsiva:
+
+\begin{verbatim}
+// src/app/(auth)/login.tsx - Lógica de autenticação
+async function handleLogin(data: { email: string; password: string }) {
+  const users = await getUsers()
+  const user = users.find(u => u.email === data.email)
+  
+  if (!user) {
+    showToast('Usuário não encontrado!', 'error')
+    return
+  }
+  
+  if (user.password !== data.password) {
+    showToast('Senha incorreta!', 'error')
+    return
+  }
+  
+  showToast('Login realizado com sucesso!', 'success')
+  setTimeout(() => router.replace('/(tabs)/home'), 1000)
+}
+\end{verbatim}
+
+\subsubsection{Sistema de Dados Mockados}
+
+Para simular dados de atletas, clubes e estatísticas, foi criado um sistema robusto de dados mockados:
+
+\begin{verbatim}
+// src/mocks/mock-training.ts - Estrutura de dados de treino
+export type Player = {
+  id: number
+  number: number
+  name: string
+  age: number
+  position: string
+  teamType: 'titular' | 'reserva'
+}
+
+export const mockTraining = {
+  id: 1,
+  formationTitular: '4-3-3',
+  formationReserve: '3-4-3',
+  players: [
+    // Titulares (4-3-3)
+    {
+      id: 1,
+      number: 21,
+      name: 'Frankie de Jong',
+      age: 26,
+      position: 'CM',
+      teamType: 'titular',
+    },
+    // ... outros jogadores
+  ] as Player[],
+}
+\end{verbatim}
+
+\subsubsection{Componentes Específicos do Futebol}
+
+O aplicativo inclui componentes especializados para visualização de dados esportivos:
+
+\begin{verbatim}
+// src/components/futebol/field.tsx - Campo de futebol interativo
+export function Field({
+  players,
+  formationTitular,
+  formationReserve,
+  onPlayerPress,
+  onPlayerSeeMore,
+}: FieldProps) {
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  
+  // Mapeamento de posições para diferentes formações
+  const positionMaps: { [formation: string]: PositionMap } = {
+    '4-3-3': {
+      GK: { x: 0.08, y: 0.5 },
+      LB: { x: 0.2, y: 0.15 },
+      // ... outras posições
+    },
+    '3-4-3': {
+      GK: { x: 0.92, y: 0.5 },
+      CB: { x: 0.8, y: 0.25 },
+      // ... outras posições
+    },
+  }
+  
+  return (
+    <View>
+      <Svg width={FIELD_WIDTH} height={FIELD_HEIGHT}>
+        {/* Renderização do campo com SVG */}
+        {/* Posicionamento dinâmico dos jogadores */}
+      </Svg>
+    </View>
+  )
+}
+\end{verbatim}
+
+\subsubsection{Sistema de Navegação Customizada}
+
+O aplicativo implementa uma TabBar customizada com animações fluidas:
+
+\begin{verbatim}
+// src/components/layout/tab-bar.tsx - TabBar customizada
+export default function TabBar({
+  state,
+  descriptors,
+  navigation,
+}: BottomTabBarProps) {
+  const primaryColor = '#FFCC26'
+  const secondaryColor = '#876803'
+  
+  return (
+    <View className="flex bottom-3 flex-row bg-gr-1100 items-center 
+                    justify-between gap-1 mx-3 px-6 rounded-3xl 
+                    shadow-sm shadow-yl-100">
+      {state.routes.map((route, index) => {
+        const isFocused = state.index === index
+        return (
+          <TabBarButton
+            key={route.name}
+            isFocused={isFocused}
+            color={isFocused ? primaryColor : secondaryColor}
+            // ... outras props
+          />
+        )
+      })}
+    </View>
+  )
+}
+\end{verbatim}
+
+\subsubsection{Sistema de Testes Automatizados}
+
+O projeto inclui uma suíte completa de testes:
+
+\begin{verbatim}
+// src/tests/components/form-input.test.tsx - Testes de componentes
+describe('FormInput', () => {
+  it('validates email input correctly', () => {
+    const { getByPlaceholderText } = render(
+      <FormInput
+        type="email"
+        placeholder="Email input"
+        onChangeText={mockOnChangeText}
+        validationRules={[
+          {
+            validate: value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+            message: 'Must be a valid email',
+          },
+        ]}
+        onValidationChange={mockOnValidationChange}
+      />
+    )
+    
+    const input = getByPlaceholderText('Email input')
+    
+    // Test valid email
+    fireEvent.changeText(input, 'test@example.com')
+    expect(mockOnValidationChange).toHaveBeenCalledWith(true)
+    
+    // Test invalid email
+    fireEvent.changeText(input, 'invalid-email')
+    expect(mockOnValidationChange).toHaveBeenCalledWith(false)
+  })
+  
+  it('prevents SQL injection attempts', () => {
+    // Testes de segurança contra injeção SQL
+    fireEvent.changeText(input, "'; DROP TABLE users; --")
+    expect(mockOnValidationChange).toHaveBeenCalledWith(false)
+  })
+})
+\end{verbatim}
+
+\subsection{Repositório no GitHub}
+
+O código fonte completo do projeto está disponível no repositório público:
+\begin{center}
+\textbf{https://github.com/seu-usuario/futsteps-mobile}
+\end{center}
+
+O repositório inclui:
+\begin{itemize}
+    \item Código fonte completo com TypeScript
+    \item Configurações de build e deploy
+    \item Documentação técnica detalhada
+    \item Scripts de teste automatizados
+    \item Configurações de linting e formatação
+\end{itemize}
+
+\subsection{Demo do Aplicativo}
+
+Vídeos demonstrativos do aplicativo em execução estão disponíveis nos seguintes links:
+
+\begin{itemize}
+    \item \textbf{Ambiente Web}: [Link para vídeo demo web] - Demonstração da versão web responsiva
+    \item \textbf{Android}: [Link para vídeo demo Android] - Funcionalidades nativas no Android
+    \item \textbf{iOS}: [Link para vídeo demo iOS] - Funcionalidades nativas no iOS
+\end{itemize}
+
+\textbf{Nota}: Os links para os vídeos demo devem ser adicionados conforme disponibilidade. Os vídeos demonstram:
+\begin{itemize}
+    \item Fluxo completo de autenticação
+    \item Navegação entre telas
+    \item Campo de futebol interativo
+    \item Visualização de estatísticas
+    \item Responsividade em diferentes tamanhos de tela
+\end{itemize}

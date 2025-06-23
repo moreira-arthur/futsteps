@@ -12,14 +12,14 @@ export function Lineup({ players, formation, teamType }: LineupProps) {
   const filteredPlayers = players.filter(player => player.teamType === teamType)
 
   return (
-    <View className="flex-1 bg-zinc-800 rounded-lg p-3">
+    <View className="bg-zinc-800 rounded-lg p-3">
       <View className="flex-row justify-between items-center mb-3">
         <Text className="text-zinc-100 text-base font-manropeBold">
           {teamType === 'titular' ? 'Titulares' : 'Reservas'}
         </Text>
         <Text className="text-zinc-400 text-sm">{formation}</Text>
       </View>
-      <ScrollView className="flex-1">
+      <ScrollView>
         {filteredPlayers.map(player => (
           <View
             key={player.id}

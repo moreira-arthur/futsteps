@@ -15,7 +15,7 @@ Aplicativo React Native para monitoramento de talentos esportivos.
 Clone o repositório e instale as dependências:
 
 ```sh
-git clone https://github.com/seu-usuario/futsteps-mobile.git
+git clone https://github.com/moreira-arthur/futsteps
 cd futsteps/mobile
 npm install
 # ou

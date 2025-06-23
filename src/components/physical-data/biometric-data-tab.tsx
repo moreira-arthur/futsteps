@@ -241,7 +241,7 @@ export default function BiometricDataTab({
             )}
             <FormInput
               label="Placeholder"
-              placeholder="Texto do placeholder"
+              placeholder="Ex: 13.5 (Texto que será exibido no input)"
               value={attrPlaceholder}
               onChangeText={setAttrPlaceholder}
             />

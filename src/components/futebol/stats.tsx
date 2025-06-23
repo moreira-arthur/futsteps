@@ -43,11 +43,11 @@ export function Stats({ stats }: StatsProps) {
   const isSmall = width < 500
 
   return (
-    <View className="flex-1 bg-zinc-800 rounded-lg p-3">
+    <View className="bg-zinc-800 rounded-lg p-3">
       <Text className="text-zinc-100 text-base font-manropeBold mb-3">
         Estatísticas
       </Text>
-      <ScrollView className="flex-1">
+      <ScrollView>
         <View className="flex-row flex-wrap gap-2">
           {stats.map(stat => (
             <View

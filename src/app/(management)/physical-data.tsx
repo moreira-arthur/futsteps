@@ -130,7 +130,7 @@ export default function PhysicalData() {
   }
 
   const handleReturnToManagement = () => {
-    router.back()
+    router.replace('/management')
   }
 
   const handleContinue = () => {
