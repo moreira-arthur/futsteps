@@ -19,8 +19,7 @@
         "image": "./assets/images/splash.png",
         "resizeMode": "cover",
         "backgroundColor": "#111111"
-      },
-      "bundleIdentifier": "com.moreiraarthur.futsteps"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -40,19 +39,9 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-font"
-    ],
+    "plugins": ["expo-router", "expo-font"],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "c25025f4-6d72-41f3-8f91-18dd7bccf825"
-      }
-    },
-    "owner": "moreira-arthur"
+    }
   }
 }

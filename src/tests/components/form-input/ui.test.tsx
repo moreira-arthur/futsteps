@@ -1,5 +1,5 @@
 import FormInput from '@/components/common/form-input'
-import { fireEvent, render } from '@testing-library/react-native'
+import { act, fireEvent, render } from '@testing-library/react-native'
 import React from 'react'
 
 describe('FormInput UI', () => {
@@ -34,27 +34,32 @@ describe('FormInput UI', () => {
   })
 
   describe('Password Visibility', () => {
-    it('toggles password visibility', () => {
-      const { getByPlaceholderText, getByTestId } = render(
+    it('toggles password visibility', async () => {
+      const { getByPlaceholderText, getByTestId, rerender } = render(
         <FormInput
           secureTextEntry
           placeholder="Password input"
           testID="password-input"
         />
       )
-      const input = getByPlaceholderText('Password input')
+
       const toggleButton = getByTestId('password-toggle')
 
-      // Initially password should be hidden
-      expect(input.props.secureTextEntry).toBe(true)
+      // Checar estado inicial (senha oculta)
+      expect(getByPlaceholderText('Password input').props.secureTextEntry).toBe(true)
 
-      // Toggle password visibility
-      fireEvent.press(toggleButton)
-      expect(input.props.secureTextEntry).toBe(false)
+      // Toggle password visibility - mostrar senha
+      await act(async () => {
+        fireEvent.press(toggleButton)
+      })
+      // Rebuscar input para pegar atualização
+      expect(getByPlaceholderText('Password input').props.secureTextEntry).toBe(false)
 
-      // Toggle back
-      fireEvent.press(toggleButton)
-      expect(input.props.secureTextEntry).toBe(true)
+      // Toggle password visibility - esconder senha
+      await act(async () => {
+        fireEvent.press(toggleButton)
+      })
+      expect(getByPlaceholderText('Password input').props.secureTextEntry).toBe(true)
     })
   })
 
@@ -64,11 +69,8 @@ describe('FormInput UI', () => {
         <FormInput placeholder="Test input" testID="test-input" />
       )
       const input = getByPlaceholderText('Test input')
-      // Focus the input
       fireEvent(input, 'focus')
-      // Blur the input
       fireEvent(input, 'blur')
-      // No assertion on style, just ensure no error
       expect(input).toBeTruthy()
     })
   })

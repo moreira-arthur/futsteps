@@ -1,6 +1,6 @@
 import type { Player } from '@/mocks/mock-training'
 import React, { useState } from 'react'
-import { Dimensions, Modal, Pressable, Text, View } from 'react-native'
+import { Modal, Pressable, Text, View, useWindowDimensions } from 'react-native'
 import Svg, { Rect, Circle, Line, Text as SvgText } from 'react-native-svg'
 import { PlayerDetailsModal } from './PlayerDetailsModal'
 
@@ -11,17 +11,6 @@ type FieldProps = {
   onPlayerPress?: (player: Player) => void
   onPlayerSeeMore?: (player: Player) => void
 }
-
-const FIELD_MARGIN = 16
-const MAX_FIELD_WIDTH = 1000
-const MIN_FIELD_WIDTH = 320
-const windowWidth = Dimensions.get('window').width
-const FIELD_WIDTH = Math.max(
-  MIN_FIELD_WIDTH,
-  Math.min(windowWidth - FIELD_MARGIN * 2, MAX_FIELD_WIDTH)
-)
-const FIELD_HEIGHT = FIELD_WIDTH * 0.6 // paisagem
-const PLAYER_RADIUS = windowWidth >= 900 ? 30 : 16
 
 // Novo type para o dicionário de posições
 interface PositionMap {
@@ -61,7 +50,9 @@ function getPlayerCoords(
   player: Player,
   teamType: 'titular' | 'reserva',
   formationTitular: string,
-  formationReserve: string
+  formationReserve: string,
+  FIELD_WIDTH: number,
+  FIELD_HEIGHT: number
 ) {
   const formation = teamType === 'titular' ? formationTitular : formationReserve
   const map = positionMaps[formation as keyof typeof positionMaps]
@@ -81,6 +72,18 @@ export function Field({
   onPlayerSeeMore,
 }: FieldProps) {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  const { width: windowWidth } = useWindowDimensions()
+  const FIELD_MARGIN = 16
+  const MAX_FIELD_WIDTH = 1000
+  const MIN_FIELD_WIDTH = 320
+  const FIELD_PADDING = 2
+  const FIELD_WIDTH = Math.max(
+    MIN_FIELD_WIDTH,
+    Math.min(windowWidth - FIELD_MARGIN * 2, MAX_FIELD_WIDTH)
+  )
+  const FIELD_HEIGHT = FIELD_WIDTH * 0.6
+  const PLAYER_RADIUS = windowWidth >= 900 ? 30 : 16
+
   // Separar titulares e reservas e garantir ordem
   const titulares = players.filter(p => p.teamType === 'titular')
   const reservas = players.filter(p => p.teamType === 'reserva')
@@ -96,25 +99,23 @@ export function Field({
       }}
     >
       {/* Campo SVG */}
-      <Svg
-        width={FIELD_WIDTH}
-        height={FIELD_HEIGHT}
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          backgroundColor: '#176a1a',
-          borderRadius: 12,
-          borderWidth: 2,
-          borderColor: '#fff',
-        }}
-      >
+      <Svg width={FIELD_WIDTH} height={FIELD_HEIGHT}>
+        {/* Fundo verde */}
+        <Rect
+          x={FIELD_PADDING}
+          y={FIELD_PADDING}
+          width={FIELD_WIDTH - FIELD_PADDING * 2}
+          height={FIELD_HEIGHT - FIELD_PADDING * 2}
+          fill="#176a1a"
+          rx={12}
+          ry={12}
+        />
         {/* Linhas externas */}
         <Rect
-          x={0}
-          y={0}
-          width={FIELD_WIDTH}
-          height={FIELD_HEIGHT}
+          x={FIELD_PADDING}
+          y={FIELD_PADDING}
+          width={FIELD_WIDTH - FIELD_PADDING * 2}
+          height={FIELD_HEIGHT - FIELD_PADDING * 2}
           fill="none"
           stroke="#fff"
           strokeWidth={2}
@@ -124,9 +125,9 @@ export function Field({
         {/* Linha do meio */}
         <Line
           x1={FIELD_WIDTH / 2}
-          y1={0}
+          y1={FIELD_PADDING}
           x2={FIELD_WIDTH / 2}
-          y2={FIELD_HEIGHT}
+          y2={FIELD_HEIGHT - FIELD_PADDING}
           stroke="#fff"
           strokeWidth={2}
         />
@@ -141,7 +142,7 @@ export function Field({
         />
         {/* Áreas grandes */}
         <Rect
-          x={0}
+          x={FIELD_PADDING}
           y={FIELD_HEIGHT * 0.18}
           width={FIELD_WIDTH * 0.14}
           height={FIELD_HEIGHT * 0.64}
@@ -150,7 +151,7 @@ export function Field({
           strokeWidth={2}
         />
         <Rect
-          x={FIELD_WIDTH * 0.86}
+          x={FIELD_WIDTH - FIELD_PADDING - FIELD_WIDTH * 0.14}
           y={FIELD_HEIGHT * 0.18}
           width={FIELD_WIDTH * 0.14}
           height={FIELD_HEIGHT * 0.64}
@@ -160,7 +161,7 @@ export function Field({
         />
         {/* Pequenas áreas */}
         <Rect
-          x={0}
+          x={FIELD_PADDING}
           y={FIELD_HEIGHT * 0.32}
           width={FIELD_WIDTH * 0.06}
           height={FIELD_HEIGHT * 0.36}
@@ -169,7 +170,7 @@ export function Field({
           strokeWidth={2}
         />
         <Rect
-          x={FIELD_WIDTH * 0.94}
+          x={FIELD_WIDTH - FIELD_PADDING - FIELD_WIDTH * 0.06}
           y={FIELD_HEIGHT * 0.32}
           width={FIELD_WIDTH * 0.06}
           height={FIELD_HEIGHT * 0.36}
@@ -196,7 +197,9 @@ export function Field({
             player,
             'titular',
             formationTitular,
-            formationReserve
+            formationReserve,
+            FIELD_WIDTH,
+            FIELD_HEIGHT
           )
           return (
             <React.Fragment key={player.id}>
@@ -227,7 +230,9 @@ export function Field({
             player,
             'reserva',
             formationTitular,
-            formationReserve
+            formationReserve,
+            FIELD_WIDTH,
+            FIELD_HEIGHT
           )
           return (
             <React.Fragment key={player.id}>
@@ -269,7 +274,9 @@ export function Field({
             player,
             'titular',
             formationTitular,
-            formationReserve
+            formationReserve,
+            FIELD_WIDTH,
+            FIELD_HEIGHT
           )
           return (
             <Pressable
@@ -296,7 +303,9 @@ export function Field({
             player,
             'reserva',
             formationTitular,
-            formationReserve
+            formationReserve,
+            FIELD_WIDTH,
+            FIELD_HEIGHT
           )
           return (
             <Pressable

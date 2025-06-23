@@ -1,4 +1,3 @@
-import { Feather } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons'
 import React, { useState, useRef, useEffect } from 'react'
 import {
@@ -45,7 +44,6 @@ export default function FormInput({
 }: FormInputProps) {
   const [isFocused, setIsFocused] = useState(false)
   const [isValid, setIsValid] = useState<boolean | null>(null)
-  const [showPassword, setShowPassword] = useState(false)
   const inputRef = useRef<TextInput>(null)
   const [localValue, setLocalValue] = useState(value)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
@@ -55,16 +53,8 @@ export default function FormInput({
     setLocalValue(value)
   }, [value])
 
-  // Accessibility label
-  const accLabel = label
-    ? required
-      ? `${label} (required)`
-      : label
-    : props.placeholder || ''
-
-  // Accessibility hint
   const getAccessibilityHint = () => {
-    let hint = accessibilityHint || ''
+    let hint = typeof accessibilityHint === 'string' ? accessibilityHint : ''
 
     if (type === 'number' || type === 'decimal') {
       hint += hint ? '. numeric input' : 'numeric input'
@@ -74,7 +64,7 @@ export default function FormInput({
       hint += hint ? '. password input' : 'password input'
     }
 
-    if (error && (!localValue || !isValid)) {
+    if (typeof error === 'string' && error && (!localValue || !isValid)) {
       hint += hint ? `. ${error}` : error
     }
 
@@ -85,13 +75,14 @@ export default function FormInput({
     return hint
   }
 
-  // Accessibility state
-  const accState: { disabled: boolean; invalid: boolean } = {
-    disabled: !editable,
-    invalid: !!error,
+  const getAccessibilityLabel = () => {
+    let label = props.placeholder || ''
+    if (required) label += ' (required)'
+    if (type === 'password') label += ' (password)'
+    if (type === 'email') label += ' (email)'
+    return label
   }
 
-  // Validation
   const validateInput = (text: string) => {
     if (required && !text) {
       setIsValid(false)
@@ -119,11 +110,7 @@ export default function FormInput({
         sanitizedText = text.replace(/[^0-9]/g, '')
         break
       case 'decimal': {
-        // Substitui vírgula por ponto
-        sanitizedText = text.replace(',', '.')
-        // Remove caracteres não numéricos exceto ponto
-        sanitizedText = sanitizedText.replace(/[^0-9.]/g, '')
-        // Garante apenas um ponto decimal
+        sanitizedText = text.replace(',', '.').replace(/[^0-9.]/g, '')
         const parts = sanitizedText.split('.')
         if (parts.length > 2) {
           sanitizedText = `${parts[0]}.${parts.slice(1).join('')}`
@@ -141,43 +128,21 @@ export default function FormInput({
   }
 
   const getBorderColor = () => {
-    if (error || (hasInteracted && !isValid)) {
-      return 'border-red-500'
-    }
-    if (isValid && localValue) {
-      return 'border-green-500'
-    }
+    if (error || (hasInteracted && !isValid)) return 'border-red-500'
+    if (isValid && localValue) return 'border-green-500'
     return 'border-zinc-700'
-  }
-
-  const getTextColor = () => {
-    if (isValid === null) return 'text-zinc-100'
-    return isValid ? 'text-green-500' : 'text-red-500'
   }
 
   const isPasswordType = type === 'password' || secureTextEntry
 
-  const getAccessibilityLabel = () => {
-    let label = props.placeholder || ''
-    if (required) {
-      label = `${label} (required)`
-    }
-    if (type === 'password') {
-      label = `${label} (password)`
-    }
-    if (type === 'email') {
-      label = `${label} (email)`
-    }
-    return label
-  }
-
   return (
     <View className="w-full mb-4">
-      {label && (
+      {typeof label === 'string' && label.length > 0 && (
         <Text className="text-zinc-100 text-sm font-manropeBold mb-2">
           {label}
         </Text>
       )}
+
       <View className="relative">
         <TextInput
           ref={inputRef}
@@ -194,7 +159,7 @@ export default function FormInput({
             type === 'number' || type === 'decimal' ? 'numeric' : 'default'
           }
           autoCapitalize={type === 'email' ? 'none' : 'sentences'}
-          testID="form-input"
+          testID={testID || 'form-input'}
           accessibilityLabel={getAccessibilityLabel()}
           accessibilityHint={getAccessibilityHint()}
           accessibilityRole="text"
@@ -202,6 +167,7 @@ export default function FormInput({
             disabled: !editable,
           }}
         />
+
         {isPasswordType && (
           <TouchableOpacity
             className="absolute right-3 top-1/2 -translate-y-1/2"
@@ -221,7 +187,8 @@ export default function FormInput({
           </TouchableOpacity>
         )}
       </View>
-      {error && (
+
+      {typeof error === 'string' && error.length > 0 && (
         <Text className="text-red-500 text-sm font-manropeRegular mt-1">
           {error}
         </Text>
@@ -229,4 +196,3 @@ export default function FormInput({
     </View>
   )
 }
- 
