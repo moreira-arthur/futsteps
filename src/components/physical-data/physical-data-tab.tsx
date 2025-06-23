@@ -43,8 +43,20 @@ export default function PhysicalDataTab({
   leanMassPercentage,
   onLeanMassPercentageChange,
 }: PhysicalDataTabProps) {
-  const imc =
-    weight && height ? calculateIMC(Number(weight), Number(height)) : null
+  let imc: number | null = null
+  let imcError: string | null = null
+
+  if (weight && height) {
+    try {
+      imc = calculateIMC(Number(weight), Number(height))
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        imcError = e.message
+      } else {
+        imcError = 'Erro desconhecido ao calcular IMC'
+      }
+    }
+  }
 
   return (
     <View className="bg-zinc-800 rounded-lg p-4">
@@ -90,9 +102,12 @@ export default function PhysicalDataTab({
         <Text className="text-zinc-100 text-sm mb-2">IMC</Text>
         <View className="bg-zinc-900 p-4 rounded-lg">
           <Text className="text-zinc-100 text-lg">
-            {imc ? imc.toFixed(2) : '---'}
+            {imcError ? '---' : imc !== null ? imc.toFixed(2) : '---'}
           </Text>
         </View>
+        {imcError && (
+          <Text className="text-red-400 text-xs mt-1">{imcError}</Text>
+        )}
       </View>
 
       <FormInput
